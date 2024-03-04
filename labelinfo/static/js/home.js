@@ -19,7 +19,7 @@ function startDecode(){
             console.log(result)
             const scan_result = decodeHGCALBarcode(result.text);
             if(!scan_result.is_ok){
-                document.getElementById('result-area').classList.toggle("has-background-danger");
+                document.getElementById('result-area').classList.toggle("has-background-danger-light");
             }
             document.getElementById('result').textContent = scan_result.text
             running=false;
@@ -37,7 +37,7 @@ function setState(run){
     if(run){
         document.getElementById('result').textContent = '';
         document.getElementById('toggleButton').textContent = 'Stop';
-        document.getElementById('result-area').classList.remove("has-background-danger");
+        document.getElementById('result-area').classList.remove("has-background-danger-light");
         running=true;
         startDecode()
     } else {

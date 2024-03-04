@@ -54,9 +54,17 @@
     visibility: visible;
     opacity: 1;
 } 
+
+#result {
+    width:100%;
+    overflow-wrap: normal;
+    white-space: normal;
+}
+
+
 .video-wrapper{
-    width: 300px;
-    height: 200px;
+    /* width: 300px; */
+    /* height: 200px; */
     border: 1px solid gray;
     margin: 10px auto;
     position: relative;
