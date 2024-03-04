@@ -2,12 +2,26 @@ let selectedDeviceId;
 const codeReader = new ZXing.BrowserMultiFormatReader()
 let running=false;
 
+
+class ScanResult{
+    constructor(is_ok, text, major_type, sub_type, code){
+        this.is_ok = is_ok;
+        this.major_type = major_type;
+        this.sub_type = sub_type;
+        this.code = code;
+        this.text = text;
+    }
+}
+
 function startDecode(){
     codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
         if (result) {
             console.log(result)
-            const text_result = decodeHGCALBarcode(result.text);
-            document.getElementById('result').textContent = text_result
+            const scan_result = decodeHGCALBarcode(result.text);
+            if(!scan_result.is_ok){
+                document.getElementById('result-area').classList.toggle("has-background-danger");
+            }
+            document.getElementById('result').textContent = scan_result.text
             running=false;
             setState(running)
         }
@@ -23,6 +37,7 @@ function setState(run){
     if(run){
         document.getElementById('result').textContent = '';
         document.getElementById('toggleButton').textContent = 'Stop';
+        document.getElementById('result-area').classList.remove("has-background-danger");
         running=true;
         startDecode()
     } else {

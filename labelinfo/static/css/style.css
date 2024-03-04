@@ -71,6 +71,6 @@
     position: absolute;
     display: block;
     content:"";
-    inset: 20%;
+    inset: 30%;
     border: 1px solid red;
 }
