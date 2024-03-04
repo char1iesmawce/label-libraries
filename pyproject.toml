@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "prod_monitor"
+version = "0.1.0"
+description = "Production Monitoring"
+authors = ["JM"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.6.1"
+pandas = "^1.1"
+PyYAML = "^6.0"
+Flask = "^2.0"
+Frozen-Flask = "^1.0"
+requests = "^2.27"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,50 @@
+image: python:3.9
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "trunk"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == "development"'
+      when: always
+
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  LABELINFO_STATIC_COMMIT: "$CI_COMMIT_SHORT_SHA"
+  GIT_SUBMODULE_STRATEGY: recursive
+
+cache:
+  paths:
+    - .cache/pip
+    - env/
+
+before_script:
+  - python --version  # For debugging
+  - python3 -m venv env
+  - source env/bin/activate
+
+install_deps:
+  stage: build
+  script:
+    - pip3 install .
+
+build:
+  stage: build
+  needs: [install_deps]
+  script:
+    - python3 -m labelinfo freeze
+  artifacts:
+    paths:
+      - build/
+
+pages:
+  stage: deploy
+  script:
+    - cp build/staticsite/homepage.html build/staticsite/index.html
+    - mv build/staticsite/ public/
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "trunk"'
+  artifacts:
+    paths:
+      - public
+
