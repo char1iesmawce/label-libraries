@@ -20,7 +20,7 @@ limitations under the License. -#}
   <div class="column is-two-thirds has-text-centered">
     <div class="section">
       <div class="block">
-        <pre id="result-area"><p id="result">Please Scan Your Barcode</p></pre>
+        <div id="result-area" class="box has-text-centered">Please Scan Your Barcode</div>
         <div  class="video-wrapper">
           <div  class="video-guide"> </div>
           <video id="video" ></video>
@@ -32,9 +32,14 @@ limitations under the License. -#}
 </div>
 
 
-<script type="text/javascript" src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+<script type="text/javascript" src="{{url_for('static', filename='external_js/zebra.min.js')}}"></script>
+
 <script type="text/javascript" src="{{url_for('static', filename='js/barcode_decode.js')}}"></script>
+
+<script type="text/javascript" src="{{url_for('main.barcodeConf')}}"></script>
+
 <script type="text/javascript" src="{{url_for('static', filename='js/home.js')}}"></script>
+
 </script>
 
 

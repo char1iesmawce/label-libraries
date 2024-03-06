@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "prod_monitor"
+name = "labelinfo"
 version = "0.1.0"
-description = "Production Monitoring"
+description = "Label Scanner"
 authors = ["JM"]
 readme = "README.md"
 

@@ -14,6 +14,7 @@
 
 import argparse
 import datetime
+import json
 import logging
 import math
 import os
@@ -30,13 +31,21 @@ from . import createApp
 logger = logging.getLogger(__name__)
 
 
+def loadBarcodeConfiguration(path):
+    path = Path(path)
+    with open(path, "r") as f:
+        data = json.load(f)
+    return data
+
+
 def startServer(args):
-    app = createApp({})
+    data = loadBarcodeConfiguration(args.config_path)
+    app = createApp({"BARCODE_CONFIGURATION": data})
     app.run(debug=True, port=args.port)
 
 
 def doFreezing(app):
-    freezer = Freezer(app)
+    freezer = Freezer(app, with_static_files=True)
     with click.progressbar(
         freezer.freeze_yield(), item_show_func=lambda p: p.url if p else "Done!"
     ) as urls:
@@ -46,12 +55,14 @@ def doFreezing(app):
 
 def freezeSite(args):
     outpath = str((Path(__file__).parent.parent / "build" / "staticsite").resolve())
+    data = loadBarcodeConfiguration(args.config_path)
     app = createApp(
-        {},
+        {"BARCODE_CONFIGURATION": data},
         dict(
             FREEZER_DESTINATION=outpath,
             FREEZER_RELATIVE_URLS=True,
             FREEZER_IGNORE_MIMETYPE_WARNINGS=True,
+            FREEZER_STATIC_IGNORE=["#*", "~*", ".*"],
             DEBUG=False,
             STATIC_SITE=True,
             STATIC_COMPILE_TIME=datetime.datetime.now(datetime.timezone.utc).strftime(
@@ -59,13 +70,20 @@ def freezeSite(args):
             ),
         ),
     )
-    static_commit = os.environ.get("PRODVIS_STATIC_COMMIT", default=None)
+    static_commit = os.environ.get("LABELINFO_STATIC_COMMIT", default=None)
     app.config["STATIC_GIT_COMMIT"] = static_commit
     doFreezing(app)
 
 
 def main():
     parser = argparse.ArgumentParser(prog="HGCAL Label Scanner")
+    parser.add_argument(
+        "-c",
+        "--config-path",
+        required=True,
+        help="Path to json file containing the barcode configuration",
+    )
+
     subparsers = parser.add_subparsers()
     parser_freeze = subparsers.add_parser("freeze")
     parser_freeze.set_defaults(func=freezeSite)
@@ -79,6 +97,7 @@ def main():
     if "func" not in args:
         parser.print_help()
         sys.exit(0)
+
     args.func(args)
 
 

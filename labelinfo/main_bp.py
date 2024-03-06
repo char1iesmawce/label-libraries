@@ -33,7 +33,6 @@ logger = logging.getLogger(__name__)
 
 bp = Blueprint("main", __name__)
 
-
 @bp.route("/homepage.html")
 def homepage():
     return render_template("home.html")
@@ -42,3 +41,8 @@ def homepage():
 @bp.route("/about.html")
 def about():
     return render_template("about.html")
+
+@bp.route("/internal/barcode_configuration.js")
+def barcodeConf():
+    config = current_app.config["ALL_DATA"]["BARCODE_CONFIGURATION"]
+    return "const barcode_configuration = " + json.dumps(config) + ";"

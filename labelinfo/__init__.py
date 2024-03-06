@@ -34,6 +34,7 @@ def createApp(data, config=None):
         app.config.from_mapping(config)
 
     from . import main_bp
+
     app.register_blueprint(main_bp.bp)
     app.add_url_rule("/", endpoint="main.homepage")
 
