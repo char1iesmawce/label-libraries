@@ -3,16 +3,6 @@ const codeReader = new ZXing.BrowserMultiFormatReader()
 let running=false;
 
 
-class ScanResult{
-    constructor(is_ok, text, major_type, sub_type, code){
-        this.is_ok = is_ok;
-        this.major_type = major_type;
-        this.sub_type = sub_type;
-        this.code = code;
-        this.text = text;
-    }
-}
-
 function startDecode(){
     codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
         if (result) {
