@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 bp = Blueprint("main", __name__)
 
-@bp.route("/homepage.html")
+@bp.route("/index.html")
 def homepage():
     return render_template("home.html")
 

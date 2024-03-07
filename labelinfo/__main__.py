@@ -62,7 +62,7 @@ def freezeSite(args):
             FREEZER_DESTINATION=outpath,
             FREEZER_RELATIVE_URLS=True,
             FREEZER_IGNORE_MIMETYPE_WARNINGS=True,
-            FREEZER_STATIC_IGNORE=["#*", "~*", ".*"],
+            FREEZER_STATIC_IGNORE=["#*", "~*", ".*", "*~"],
             DEBUG=False,
             STATIC_SITE=True,
             STATIC_COMPILE_TIME=datetime.datetime.now(datetime.timezone.utc).strftime(
