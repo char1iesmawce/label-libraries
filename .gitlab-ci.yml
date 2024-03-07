@@ -7,11 +7,9 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == "development"'
       when: always
 
-
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   LABELINFO_STATIC_COMMIT: "$CI_COMMIT_SHORT_SHA"
-  GIT_SUBMODULE_STRATEGY: recursive
 
 cache:
   paths:
@@ -19,7 +17,7 @@ cache:
     - env/
 
 before_script:
-  - python --version  # For debugging
+  - python --version 
   - python3 -m venv env
   - source env/bin/activate
 
@@ -28,11 +26,17 @@ install_deps:
   script:
     - pip3 install .
 
-build:
+get_barcodes:
   stage: build
   needs: [install_deps]
   script:
-    - python3 -m labelinfo freeze
+    - bash deployment/scripts/fetch_barcode_conf.sh 
+
+build:
+  stage: build
+  needs: [get_barcodes]
+  script:
+    - python3 -m labelinfo -c 'barcode_configuration.json' freeze
   artifacts:
     paths:
       - build/
