@@ -26,6 +26,9 @@ limitations under the License. -#}
           <video id="video" ></video>
         </div>
         <a class="button" id="toggleButton">Stop</a>
+        <div class="select">
+          <select id="source-select" style="max-width:400px"> </select>
+        </div>
       </div>
     </div>
   </div>
@@ -39,6 +42,12 @@ limitations under the License. -#}
 <script type="text/javascript" src="{{url_for('main.barcodeConf')}}"></script>
 
 <script type="text/javascript" src="{{url_for('static', filename='js/home.js')}}"></script>
+
+{% for p in  config["BARCODE_DECODER_FNAMES"] %}
+<script type="text/javascript" src="{{url_for('custom_decoders', filename=p)}}"></script>
+{% endfor %}
+
+
 
 </script>
 

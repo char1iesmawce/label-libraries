@@ -40,7 +40,9 @@ def loadBarcodeConfiguration(path):
 
 def startServer(args):
     data = loadBarcodeConfiguration(args.config_path)
-    app = createApp({"BARCODE_CONFIGURATION": data})
+    app = createApp(
+        {"BARCODE_CONFIGURATION": data}, {"BARCODE_DECODERS_DIR": args.decoders_dir}
+    )
     app.run(debug=True, port=args.port)
 
 
@@ -59,6 +61,7 @@ def freezeSite(args):
     app = createApp(
         {"BARCODE_CONFIGURATION": data},
         dict(
+            BARCODE_DECODERS_DIR=args.decoders_dir,
             FREEZER_DESTINATION=outpath,
             FREEZER_RELATIVE_URLS=True,
             FREEZER_IGNORE_MIMETYPE_WARNINGS=True,
@@ -83,7 +86,13 @@ def main():
         required=True,
         help="Path to json file containing the barcode configuration",
     )
-
+    parser.add_argument(
+        "-d",
+        "--decoders-dir",
+        default=None,
+        type=str,
+        help="Path to directory with supplementary JS decoders",
+    )
     subparsers = parser.add_subparsers()
     parser_freeze = subparsers.add_parser("freeze")
     parser_freeze.set_defaults(func=freezeSite)

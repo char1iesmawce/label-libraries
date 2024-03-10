@@ -1,13 +1,13 @@
-let selectedDeviceId;
 const codeReader = new ZXing.BrowserMultiFormatReader()
-let running=false;
 
-function setResult(result){
+let running = false;
+
+
+function setResult(result) {
     if (!result.is_ok) {
         var innerhtml = `<p>${result.text}</p>`;
         document.getElementById('result-area').classList.add("has-background-danger-light");
-    }
-    else {
+    } else {
         var innerhtml = ` <table class="table is-fullwidth is-bordered is-narrow">
                             <thead>
                                 <tr>
@@ -27,20 +27,28 @@ function setResult(result){
                                </tr>
                             </thead>
                         </table>`;
+        if (result.text !== null) {
+            innerhtml += `
+                        <div>
+                        ${result.text}
+                        </div>
+`
+        }
         document.getElementById('result-area').classList.remove("has-background-danger-light");
-        
+
     }
     document.getElementById('result-area').innerHTML = innerhtml;
 
 }
 
-function startDecode(){
-    codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
+function startDecode(selected_device_id) {
+    console.log(`Started continous decode from camera with id ${selected_device_id}`)
+    codeReader.decodeFromVideoDevice(selected_device_id, 'video', (result, err) => {
         if (result) {
             console.log(result)
             const scan_result = decodeHGCALBarcode(result.text, barcode_configuration);
             setResult(scan_result);
-            running=false;
+            running = false;
             setState(running)
         }
         if (err && !(err instanceof ZXing.NotFoundException)) {
@@ -50,19 +58,16 @@ function startDecode(){
     })
 }
 
-
-
-
-
-function setState(run){
-    if(run){
+function setState(run) {
+    if (run) {
         document.getElementById('result-area').innerHTML = 'Please Scan Your Barcode';
         document.getElementById('toggleButton').textContent = 'Stop';
         document.getElementById('result-area').classList.remove("has-background-danger-light");
-        running=true;
+        running = true;
         startDecode()
     } else {
-        running=false;ssl_context='adhoc'
+        running = false;
+        ssl_context = 'adhoc'
         codeReader.reset()
         document.getElementById('toggleButton').textContent = 'Start';
         console.log('Reset.')
@@ -74,15 +79,26 @@ document.getElementById('toggleButton').addEventListener('click', () => {
 })
 
 
-codeReader.listVideoInputDevices()
-    .then((videoInputDevices) => {
-        running = true;
-        const sourceSelect = document.getElementById('sourceSelect')
-        selectedDeviceId = videoInputDevices[0].deviceId
-
-        console.log(`Started continous decode from camera with id ${selectedDeviceId}`)
-        startDecode()
+codeReader.listVideoInputDevices({
+    audio: false,
+    video: {
+        facingMode: 'environment'
+    }
+}).then((videoInputDevices) => {
+    running = true;
+    const selection = document.getElementById('source-select')
+    videoInputDevices.forEach((element) => {
+        const sourceOption = document.createElement('option')
+        sourceOption.text = element.label
+        sourceOption.value = element.deviceId
+        selection.appendChild(sourceOption)
     })
+    selection.onchange = () => {
+        startDecode(sourceSelect.value);
+    };
+    default_device = videoInputDevices[0].deviceId
+    startDecode(default_device)
+})
     .catch((err) => {
         console.error(err)
         document.getElementById('result-area').textContent = err;
