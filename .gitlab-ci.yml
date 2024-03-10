@@ -26,16 +26,11 @@ install_deps:
   script:
     - pip3 install .
 
-get_barcodes:
+build:
   stage: build
   needs: [install_deps]
   script:
     - bash deployment/scripts/fetch_barcode_conf.sh 
-
-build:
-  stage: build
-  needs: [get_barcodes]
-  script:
     - python3 -m labelinfo -d "decoders" -c 'barcode_configuration.json' freeze
   artifacts:
     paths:
