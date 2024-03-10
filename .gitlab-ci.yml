@@ -36,7 +36,7 @@ build:
   stage: build
   needs: [get_barcodes]
   script:
-    - python3 -m labelinfo -c 'barcode_configuration.json' freeze
+    - python3 -m labelinfo -d "decoders" -c 'barcode_configuration.json' freeze
   artifacts:
     paths:
       - build/
