@@ -85,6 +85,13 @@ codeReader.listVideoInputDevices({
         facingMode: 'environment'
     }
 }).then((videoInputDevices) => {
+    if(videoInputDevices.length == 0 ){
+        document.getElementById('result-area').innerHTML = 'No Cameras Found';
+        document.querySelector('.video-wrapper').style.display = "none";
+        document.querySelector('#toggleButton').style.display = "none";
+        document.querySelector('#source-select-div').style.display = "none";
+        return 
+    }
     running = true;
     const selection = document.getElementById('source-select')
     videoInputDevices.forEach((element) => {
