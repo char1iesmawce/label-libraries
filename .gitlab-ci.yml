@@ -39,7 +39,6 @@ build:
 pages:
   stage: deploy
   script:
-    - cp build/staticsite/homepage.html build/staticsite/index.html
     - mv build/staticsite/ public/
   rules:
     - if: '$CI_COMMIT_BRANCH == "trunk"'
