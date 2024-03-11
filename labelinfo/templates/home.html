@@ -1,0 +1,55 @@
+{#Copyright 2023 Jeremiah Mans, University of Minnesota (jmmans@umn.edu)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -#}
+{% extends 'base.html' %}
+{% set active_page="home" %}
+{% block title %} Home {% endblock %}
+{% block content %}
+
+<div class="columns is-centered">
+  <div class="column is-two-thirds has-text-centered">
+    <div class="section">
+      <div class="block">
+        <div id="result-area" class="box has-text-centered">Please Scan Your Barcode</div>
+        <div  class="video-wrapper">
+          <div  class="video-guide"> </div>
+          <video id="video" ></video>
+        </div>
+        <a class="button" id="toggleButton">Stop</a>
+        <div class="select">
+          <select id="source-select" style="max-width:400px"> </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript" src="{{url_for('static', filename='external_js/zebra.min.js')}}"></script>
+
+<script type="text/javascript" src="{{url_for('static', filename='js/barcode_decode.js')}}"></script>
+
+<script type="text/javascript" src="{{url_for('main.barcodeConf')}}"></script>
+
+<script type="text/javascript" src="{{url_for('static', filename='js/home.js')}}"></script>
+
+{% for p in  config["BARCODE_DECODER_FNAMES"] %}
+<script type="text/javascript" src="{{url_for('custom_decoders', filename=p)}}"></script>
+{% endfor %}
+
+
+
+</script>
+
+
+{% endblock %}
