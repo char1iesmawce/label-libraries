@@ -43,7 +43,7 @@ def startServer(args):
     app = createApp(
         {"BARCODE_CONFIGURATION": data}, {"BARCODE_DECODERS_DIR": args.decoders_dir}
     )
-    app.run(debug=True, port=args.port)
+    app.run(port=args.port, host=args.host, debug=not args.nodebug)
 
 
 def doFreezing(app):
@@ -93,6 +93,11 @@ def main():
         type=str,
         help="Path to directory with supplementary JS decoders",
     )
+    parser.add_argument(
+        "--nodebug",
+        default=False,
+        action="store_true",
+    )
     subparsers = parser.add_subparsers()
     parser_freeze = subparsers.add_parser("freeze")
     parser_freeze.set_defaults(func=freezeSite)
@@ -101,6 +106,7 @@ def main():
     parser_serve.set_defaults(func=startServer)
 
     parser_serve.add_argument("-p", "--port", type=int, default=5000)
+    parser_serve.add_argument("--host", type=str, default=None)
     args = parser.parse_args()
 
     if "func" not in args:
