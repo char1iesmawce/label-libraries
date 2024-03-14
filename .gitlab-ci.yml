@@ -41,7 +41,6 @@ make_decoder_js:
   script:
     - mkdir -p build/js
     - cat labelinfo/static/js/barcode_decode.js decoders/*.js > build/js/hgcal_barcode_decoding.js
-    - cp barcode_configuration.json build/js/
   artifacts:
     paths:
       - build/js/hgcal_barcode_decoding.js
