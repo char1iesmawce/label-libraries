@@ -1,6 +1,7 @@
 const codeReader = new ZXing.BrowserMultiFormatReader()
 
 let running = false;
+let video_device_id = null;
 
 
 function setResult(result) {
@@ -41,15 +42,18 @@ function setResult(result) {
 
 }
 
-function startDecode(selected_device_id) {
-    console.log(`Started continous decode from camera with id ${selected_device_id}`)
-    codeReader.decodeFromVideoDevice(selected_device_id, 'video', (result, err) => {
+function startDecode() {
+    codeReader.reset();
+    running = true;
+    console.log(`Started continous decode from camera with id ${video_device_id}`)
+    codeReader.decodeFromVideoDevice(video_device_id, 'video', (result, err) => {
         if (result) {
             console.log(result)
             const scan_result = decodeHGCALBarcode(result.text, barcode_configuration);
-            setResult(scan_result);
             running = false;
-            setState(running)
+            setPageState();
+            codeReader.reset();
+            setResult(scan_result);
         }
         if (err && !(err instanceof ZXing.NotFoundException)) {
             console.error(err)
@@ -58,55 +62,61 @@ function startDecode(selected_device_id) {
     })
 }
 
-function setState(run) {
-    if (run) {
+function setPageState() {
+    if (running) {
         document.getElementById('result-area').innerHTML = 'Please Scan Your Barcode';
         document.getElementById('toggleButton').textContent = 'Stop';
         document.getElementById('result-area').classList.remove("has-background-danger-light");
-        running = true;
-        startDecode()
     } else {
-        running = false;
-        ssl_context = 'adhoc'
-        codeReader.reset()
         document.getElementById('toggleButton').textContent = 'Start';
-        console.log('Reset.')
     }
 }
 
 document.getElementById('toggleButton').addEventListener('click', () => {
-    setState(!running);
+    running = !running;
+    if(running){
+        startDecode();
+    }
+    else {
+        codeReader.reset()
+    }
+    setPageState();
 })
 
 
-codeReader.listVideoInputDevices({
-    audio: false,
-    video: {
-        facingMode: 'environment'
+function init(){
+    codeReader.listVideoInputDevices().then((videoInputDevices) => {
+        const device_str  = videoInputDevices.map(x=>x.deviceId).join("\n");
+        if(videoInputDevices.length === 0 ){
+            document.getElementById('result-area').innerHTML = 'No Cameras Found';
+            document.querySelector('.video-wrapper').style.display = "none";
+            document.querySelector('#toggleButton').style.display = "none";
+            document.querySelector('#source-select-div').style.display = "none";
+            return 
+        }
+        const selection = document.getElementById('source-select')
+        videoInputDevices.forEach((element) => {
+            const sourceOption = document.createElement('option')
+            sourceOption.text = element.label
+            sourceOption.value = element.deviceId
+            selection.appendChild(sourceOption)
+        })
+        selection.onchange = (x) => {
+
+            running=true;
+            setPageState();
+            video_device_id = selection.value;
+            startDecode();
+        };
+        video_device_id = videoInputDevices[0].deviceId;
+        startDecode()
     }
-}).then((videoInputDevices) => {
-    if(videoInputDevices.length == 0 ){
-        document.getElementById('result-area').innerHTML = 'No Cameras Found';
-        document.querySelector('.video-wrapper').style.display = "none";
-        document.querySelector('#toggleButton').style.display = "none";
-        document.querySelector('#source-select-div').style.display = "none";
-        return 
-    }
-    running = true;
-    const selection = document.getElementById('source-select')
-    videoInputDevices.forEach((element) => {
-        const sourceOption = document.createElement('option')
-        sourceOption.text = element.label
-        sourceOption.value = element.deviceId
-        selection.appendChild(sourceOption)
-    })
-    selection.onchange = () => {
-        startDecode(sourceSelect.value);
-    };
-    default_device = videoInputDevices[0].deviceId
-    startDecode(default_device)
-})
-    .catch((err) => {
-        console.error(err)
-        document.getElementById('result-area').textContent = err;
-    })
+                                           )
+        .catch((err) => {
+            console.error(err)
+            document.getElementById('result-area').textContent = err;
+        })
+
+}
+
+navigator.mediaDevices.getUserMedia({video: true, audio: false}).then(init)
