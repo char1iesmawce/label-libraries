@@ -36,6 +36,15 @@ build:
     paths:
       - build/
 
+make_decoder_js:
+  stage: build
+  script:
+    - mkdir -p build/js
+    - cat labelinfo/static/js/barcode_decode.js decoders/*.js > build/js/hgcal_barcode_decoding.js
+  artifacts:
+    paths:
+      - build/js/hgcal_barcode_decoding.js
+
 pages:
   stage: deploy
   script:
