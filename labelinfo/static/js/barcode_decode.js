@@ -1,6 +1,5 @@
 const barcode_decode_map = new Map();
 
-
 function register_new_decoder() {
     if (arguments.length == 2) {
         const major_type = arguments[0];
@@ -36,19 +35,20 @@ function register_new_decoder() {
 }
 
 class ScanResult {
-    constructor(is_ok, text, major_code, major_name, sub_code, sub_name, code) {
+    constructor(is_ok, text, major_code, major_name, sub_code, sub_name, sn_code, sn_text) {
         this.is_ok = is_ok;
         this.major_name = major_name;
         this.sub_name = sub_name;
         this.major_code = major_code;
         this.sub_code = sub_code;
-        this.code = code;
+        this.sn_code = sn_code;
+	this.sn_text = sn_text;
+	this.fmt_label = `320-${major_code}-${sub_code}-${sn_code}`
         this.text = text;
     }
 }
 
-
-function getDecoded(major_type, sub_type, code) {
+function getDecoded(major_type, sub_type, sn_code) {
     if (!barcode_decode_map.has(major_type)) {
         return null;
     }
@@ -56,7 +56,7 @@ function getDecoded(major_type, sub_type, code) {
     if (Object.hasOwn(mt, "subtype_decoder_funcs") && mt.subtype_decoder_funcs.has(sub_type)) {
         return mt.subtype_decoder_funcs.get(sub_type)(major_type, sub_type, code);
     } else if (Object.hasOwn(mt, "major_decode_func")) {
-        return mt.major_decode_func(major_type, sub_type, code);
+        return mt.major_decode_func(major_type, sub_type, sn_code);
     }
     return null
 }
@@ -79,7 +79,6 @@ function decodeHGCALBarcode(raw_barcode, configuration) {
     }
     const [major_name, major_data] = major_type;
 
-
     const sub_type = Object.entries(
         major_data["subtypes"]).find(
         ([_, st]) => raw_barcode.substring(5).startsWith(st["sub_code"]));
@@ -91,14 +90,30 @@ function decodeHGCALBarcode(raw_barcode, configuration) {
 
     console.log(sub_type)
     console.log(sub_data)
-    const code = raw_barcode.substring(5 + sub_data["sub_code"].length);
+    let sn_code = raw_barcode.substring(5 + sub_data["sub_code"].length);
+    let sn_text = sn_code;
+    let text=""
 
-    let text = getDecoded(major_data.major_code, sub_data.sub_code, code);
+    let pretty = getDecoded(major_data.major_code, sub_data.sub_code, sn_code);
+    console.log(pretty)
+    if (pretty !== null) {
+	if ("pretty_name" in pretty) {
+	    text=pretty.pretty_name
+	}
+	if ("pretty_sn_code" in pretty) {
+	    sn_code=pretty.pretty_sn_code
+	}
+	if ("pretty_sn_meaning" in pretty) {
+	    sn_text=pretty.pretty_sn_meaning
+	}
+    }
+    
     return new ScanResult(true,
-        text,
-        major_data.major_code,
-        major_name,
-        sub_data.sub_code,
-        sub_name,
-        code)
+			  text,
+			  major_data.major_code,
+			  major_name,
+			  sub_data.sub_code,
+			  sub_name,
+			  sn_code,
+			  sn_text)
 }
