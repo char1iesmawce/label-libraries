@@ -9,22 +9,27 @@ function setResult(result) {
         var innerhtml = `<p>${result.text}</p>`;
         document.getElementById('result-area').classList.add("has-background-danger-light");
     } else {
-        var innerhtml = ` <table class="table is-fullwidth is-bordered is-narrow">
+        var innerhtml = ` <h1>${result.fmt_label}</h1>
+                          <table class="table is-fullwidth is-bordered is-narrow">
                             <thead>
                                 <tr>
-                                    <th class="has-text-centered"> Major Type </th>
-                                    <th class="has-text-centered">Subtype</th>
-                                    <th class="has-text-centered">Code</th>
+                                    <th class="has-text-centered">Field</th>
+                                    <th class="has-text-centered">Value</th>
+                                    <th class="has-text-centered">Meaning</th>
                                 </tr>
                                 <tr>
+                                    <td class="has-text-centered">Major Type</a>
                                     <td class="has-text-centered"> ${result.major_code} </td>
+                                    <td class="has-text-centered"> ${result.major_name} </td>
+                                <tr>
+                                    <td class="has-text-centered">Subtype</a>
                                     <td class="has-text-centered">  ${result.sub_code} </td>
-                                    <td class="has-text-centered"> ${result.code} </td>
+                                    <td class="has-text-centered">  ${result.sub_name} </td>
                                </tr>
                                 <tr>
-                                    <td class="has-text-centered"> ${result.major_name} </td>
-                                    <td class="has-text-centered">  ${result.sub_name} </td>
-                                    <td class="has-text-centered"> ${result.code} </td>
+                                    <td class="has-text-centered">Serial Code</a>
+                                    <td class="has-text-centered"> ${result.sn_code} </td>
+                                    <td class="has-text-centered"> ${result.sn_text} </td>
                                </tr>
                             </thead>
                         </table>`;
