@@ -125,3 +125,68 @@ function init(){
 }
 
 navigator.mediaDevices.getUserMedia({video: true, audio: false}).then(init)
+
+function registerPinch(el, func){
+
+    const event_cache = [];
+    let prev_diff = -1;
+
+
+    function removeEvent(ev) {
+        const index = event_cache.findIndex(
+            (cachedEv) => cachedEv.pointerId === ev.pointerId,
+        );
+        event_cache.splice(index, 1);
+    }
+
+    function pointerupHandler(ev) {
+        removeEvent(ev);
+        if (event_cache.length < 2) {prev_diff = -1;}
+    }
+
+    function pointerdownHandler(ev) {
+        event_cache.push(ev);
+    }
+
+    function pointermoveHandler(ev) {
+        const index = event_cache.findIndex(
+            (cev) => cev.pointerId === ev.pointerId,
+        );
+        event_cache[index] = ev;
+        if (event_cache.length === 2) {
+            const diff = Math.abs(event_cache[0].clientX - event_cache[1].clientX);
+            if (prev_diff > 0 && (diff !== prev_diff)) {
+                func(diff);
+            }
+            prev_diff = diff;
+        }
+    }
+
+    el.onpointerdown = pointerdownHandler;
+    el.onpointermove = pointermoveHandler;
+    el.onpointerup = pointerupHandler;
+    el.onpointercancel = pointerupHandler;
+    el.onpointerout = pointerupHandler;
+    el.onpointerleave = pointerupHandler;
+
+}
+
+function getStreamCapability(stream, capability){
+    const [track] = [window.track] = stream.getVideoTracks();
+    const capabilities = track.getCapabilities();
+    const settings = track.getSettings();
+    if( !( capability  in settings)){
+        return null;
+    }
+    return capabilities[capability];
+}
+
+function zoomStreamBy(stream, val){
+
+    try {
+        const constraints = {advanced: [{"zoom": value}]};
+        await track.applyConstraints(constraints);
+    } catch (err) {
+        console.error('applyConstraints() failed: ', err);
+    }
+}
