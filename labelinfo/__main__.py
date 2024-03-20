@@ -43,7 +43,11 @@ def startServer(args):
     app = createApp(
         {"BARCODE_CONFIGURATION": data}, {"BARCODE_DECODERS_DIR": args.decoders_dir}
     )
-    app.run(port=args.port, host=args.host, debug=not args.nodebug)
+    app.run(
+        port=args.port,
+        host=args.host,
+        debug=not args.nodebug,
+    )
 
 
 def doFreezing(app):
