@@ -47,7 +47,6 @@ def startServer(args):
         port=args.port,
         host=args.host,
         debug=not args.nodebug,
-        ssl_context=("cert.pem", "key.pem"),
     )
 
 
