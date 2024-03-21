@@ -146,7 +146,13 @@ async function startDecode() {
     codeReader.decodeFromStream(current_stream, 'video', (result, err) => {
         if (result) {
             console.log(result)
-            const scan_result = decodeHGCALBarcode(result.text, barcode_configuration);
+            try{
+                var scan_result = decodeHGCALBarcode(result.text, barcode_configuration);
+            } catch (e) {
+                console.log("Barcode decoding failed");
+                console.log(e);
+                var scan_result = new ScanResult(false, `Was not able to decode barcode "${result.text}".`)
+            }
             running = false;
             setPageState();
             codeReader.reset();

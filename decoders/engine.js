@@ -6,10 +6,9 @@
   pretty_sn_meaning : "Meaning of the serial number field"
   }
 */
-  
+
 function decodeEngine(major_type, sub_type, sncode){
-    
-    return `This is an engine with encoded serial number ${sncode}`
+    return null;
 }
 
 function decodeTiles(major_Type, sub_type, sncode){
@@ -19,8 +18,8 @@ function decodeTiles(major_Type, sub_type, sncode){
     const pretty_sn=`${plate}-${rv}-${sn}`
     const pretty_sn_text=`Plate ${plate}, Reel/Magazine ${rv}, S/N ${sn}`
     return {
-	pretty_sn_code : pretty_sn,
-	pretty_sn_meaning : pretty_sn_text
+	    pretty_sn_code : pretty_sn,
+	    pretty_sn_meaning : pretty_sn_text
     }
 }
 
