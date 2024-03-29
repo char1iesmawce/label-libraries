@@ -13,8 +13,8 @@ variables:
 
 cache:
   paths:
-    - "$CI_PROJECT_DIR"/label-website/.cache/pip
-    - "$CI_PROJECT_DIR"/label-website/env/
+    - $CI_PROJECT_DIR/label-website/.cache/pip
+    - $CI_PROJECT_DIR/label-website/env/
 
 before_script:
   - cd label-website
