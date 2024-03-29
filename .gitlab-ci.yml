@@ -13,10 +13,11 @@ variables:
 
 cache:
   paths:
-    - .cache/pip
-    - env/
+    - $PIP_CACHE_DIR
+    - $CI_PROJECT_DIR/label-website/env/
 
 before_script:
+  - cd label-website
   - python --version 
   - python3 -m venv env
   - source env/bin/activate
@@ -30,11 +31,11 @@ build:
   stage: build
   needs: [install_deps]
   script:
-    - bash deployment/scripts/fetch_barcode_conf.sh 
+    - python3 "$CI_PROJECT_DIR/label-gui/static/export.py" -o "barcode_configuration.json"
     - python3 -m labelinfo -d "decoders" -c 'barcode_configuration.json' freeze
   artifacts:
     paths:
-      - build/
+      - $CI_PROJECT_DIR/label-website/build/
 
 make_decoder_js:
   stage: build
@@ -43,12 +44,12 @@ make_decoder_js:
     - cat labelinfo/static/js/barcode_decode.js decoders/*.js > build/js/hgcal_barcode_decoding.js
   artifacts:
     paths:
-      - build/js/hgcal_barcode_decoding.js
+      - $CI_PROJECT_DIR/label-website/build/js/hgcal_barcode_decoding.js
 
 pages:
   stage: deploy
   script:
-    - mv build/staticsite/ public/
+    - mv label-website/build/staticsite/ public/
   rules:
     - if: '$CI_COMMIT_BRANCH == "trunk"'
   artifacts:
