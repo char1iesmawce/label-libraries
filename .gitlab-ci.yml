@@ -49,7 +49,7 @@ make_decoder_js:
 pages:
   stage: deploy
   script:
-    - mv label-website/build/staticsite/ public/
+    - mv build/staticsite/ $CI_PROJECT_DIR/public/
   rules:
     - if: '$CI_COMMIT_BRANCH == "trunk"'
   artifacts:
