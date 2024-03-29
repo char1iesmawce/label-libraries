@@ -13,7 +13,7 @@ variables:
 
 cache:
   paths:
-    - $CI_PROJECT_DIR/label-website/.cache/pip
+    - $PIP_CACHE_DIR
     - $CI_PROJECT_DIR/label-website/env/
 
 before_script:
@@ -36,7 +36,7 @@ build:
     - python3 -m labelinfo -d "decoders" -c 'barcode_configuration.json' freeze
   artifacts:
     paths:
-      - "$CI_PROJECT_DIR"/label-website/build/
+      - $CI_PROJECT_DIR/label-website/build/
 
 make_decoder_js:
   stage: build
@@ -46,7 +46,7 @@ make_decoder_js:
     - cat labelinfo/static/js/barcode_decode.js decoders/*.js > build/js/hgcal_barcode_decoding.js
   artifacts:
     paths:
-      - "$CI_PROJECT_DIR"/label-website/build/js/hgcal_barcode_decoding.js
+      - $CI_PROJECT_DIR/label-website/build/js/hgcal_barcode_decoding.js
 
 pages:
   stage: deploy
