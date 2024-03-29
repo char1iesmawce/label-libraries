@@ -31,7 +31,6 @@ build:
   stage: build
   needs: [install_deps]
   script:
-    - cd label-website
     - python3 "$CI_PROJECT_DIR/label-gui/static/export.py" -o "barcode_configuration.json"
     - python3 -m labelinfo -d "decoders" -c 'barcode_configuration.json' freeze
   artifacts:
@@ -41,7 +40,6 @@ build:
 make_decoder_js:
   stage: build
   script:
-    - cd label-website
     - mkdir -p build/js
     - cat labelinfo/static/js/barcode_decode.js decoders/*.js > build/js/hgcal_barcode_decoding.js
   artifacts:
