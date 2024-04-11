@@ -84,7 +84,7 @@ sub_ldhexaboard = {
 for shape, gen, roc in it.product(hb_shapes, hb_board_gens, hb_hgroc_versions):
     subcode = f"{shape}{gen}{roc}"
     key = f"XL{subcode}"
-    if key not in dictionary:
+    if key not in sub_ldhexaboard:
         sub_ldhexaboard[key] = {"sub_code": subcode }
 
 
