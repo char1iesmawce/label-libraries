@@ -1,3 +1,4 @@
+import itertools as it
 '''
  For additions in the future
  ---------------------------
@@ -15,6 +16,27 @@
     }
 
 '''
+
+hexaboard_vendors = {
+    'Plotech':      {'vendor_code': "P"},
+    'HiQ':          {'vendor_code': "Q"},
+    'Micropack':    {'vendor_code': "M"},
+}
+
+hexaboard_assemblers = {
+    'Unassembled':  {'assembler_code': "U"},
+    'Hybrid SA':    {'assembler_code': "H"},
+    'Piotech':      {'assembler_code': "P"},
+}
+
+hexaboard_shapes = {
+    'Full':     {'shape_code': "F"},
+    'Top':      {'shape_code': "T"},
+    'Bottom':   {'shape_code': "B"},
+    'Left':     {'shape_code': "L"},
+    'Right':    {'shape_code': "R"},
+    'Five':     {'shape_code': "5"},
+}
 
 sub_baseplate = {}
 mat_list = ["", "W", "P", "C"]
@@ -35,6 +57,10 @@ for mat in range(1,4):
 
             sub_baseplate["BA{}".format(sub_code)] = {"sub_sn": sub_sn, "sub_code": sub_code, "name": name}
 
+hb_shapes = ["F","T", "B","L","R","5"]
+hb_board_gens = [str(x) for x in range(0,5)]
+hb_hgroc_versions = ["2", "4", "C", "U"]
+
 sub_ldhexaboard = {
     "XLF01":         {"sub_sn": "001", "sub_code": "F01", "name": "Full V2", "lower":0},
     "XLF02":         {"sub_sn": "002", "sub_code": "F02", "name": "Full NSH", "lower":500},
@@ -54,6 +80,13 @@ sub_ldhexaboard = {
     "XL503":         {"sub_sn": "503", "sub_code": "503", "name": "Five V3", "lower":7000},
     "XL510":         {"sub_sn": "510", "sub_code": "510", "name": "Five Production", "lower":70000},
 }
+
+for shape, gen, roc in it.product(hb_shapes, hb_board_gens, hb_hgroc_versions):
+    subcode = f"{shape}{gen}{roc}"
+    key = f"XL{subcode}"
+    if key not in dictionary:
+        sub_ldhexaboard[key] = {"sub_code": subcode }
+
 
 sub_hdhexaboard = {
     "XHF03":         {"sub_sn": "003", "sub_code": "F03", "name": "Full V3", "lower":7500},
@@ -339,26 +372,6 @@ MACs = {
     'TTU':  {'mac_code': "TT"},
 }
 
-hexaboard_vendors = {
-    'Plotech':      {'vendor_code': "P"},
-    'HiQ':          {'vendor_code': "Q"},
-    'Micropack':    {'vendor_code': "M"},
-}
-
-hexaboard_assemblers = {
-    'Unassembled':  {'assembler_code': "U"},
-    'Hybrid SA':    {'assembler_code': "H"},
-    'Piotech':      {'assembler_code': "P"},
-}
-
-hexaboard_shapes = {
-    'Full':     {'shape_code': "F"},
-    'Top':      {'shape_code': "T"},
-    'Bottom':   {'shape_code': "B"},
-    'Left':     {'shape_code': "L"},
-    'Right':    {'shape_code': "R"},
-    'Five':     {'shape_code': "5"},
-}
 
 magazine_list = ["A", "B", "C", "D", "E", "F", "G"]
 
