@@ -1,9 +1,12 @@
-const codeReader = new ZXing.BrowserMultiFormatReader()
-
 let running = false;
 let video_device_id = null;
 let current_stream = null;
 let current_zoom = null;
+
+const hints = new Map();
+const formats = [ZXing.BarcodeFormat.DATA_MATRIX];
+hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
+const codeReader = new ZXing.BrowserMultiFormatReader()
 
 
 
